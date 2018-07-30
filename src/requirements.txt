@@ -1,0 +1,5 @@
+# Pip requirements for this project.
+# I haven't pinned versions. It would be better to do so.
+click
+redis
+rq

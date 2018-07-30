@@ -1,0 +1,71 @@
+#!/bin/bash
+# RT ~ 2018/07/30
+
+# Environment variables
+## We need those to start large amount of containers at once with docker-compose
+export COMPOSE_PARALLEL_LIMIT=25
+export COMPOSE_HTTP_TIMEOUT=900
+
+# All functions go here.
+function help()
+{
+  # This is quite barebones, if i had more time i'd make it a proper CLI
+  # in python. For brevity i'll keep this simple.
+  echo "This is a very simple script to use hwaas."
+  echo "It requires having docker installed and running."
+  echo "./hwaas help -- print this help text."
+  echo "./hwaas build -- build the dokcer images."
+  echo "./hwaas start -- start 1 client and 1 server."
+  echo "./hwaas X Y -- start X clients and Y servers."
+  echo "./hwaas stop -- stop hwaas."
+}
+
+function dev_start()
+{
+  /usr/local/bin/docker-compose up
+  exit
+}
+
+function stop_service()
+{
+  /usr/local/bin/docker-compose down
+  exit
+}
+
+function build_images()
+{
+  /usr/local/bin/docker-compose build
+  exit
+}
+
+# Our "main".
+while [ "$1" != "" ]; do
+    PARAM=$1
+    CLIENTS=$2
+    case $PARAM in
+        -h | help)
+            help
+            exit
+            ;;
+        start)
+            dev_start
+            ;;
+        stop)
+            stop_service
+            ;;
+        build)
+            build_images
+            ;;
+        *)
+            echo $PARAM $CLIENTS
+            if  [[ "$PARAM" =~ ^[0-9]+$ ]] && [[ "$CLIENTS" =~ ^[0-9]+$ ]]
+              then
+                /usr/local/bin/docker-compose up --scale server=$PARAM --scale client=$CLIENTS
+            else
+              echo "ERROR: both parameters must be integers."
+              help
+            fi
+            exit 1
+            ;;
+    esac
+done

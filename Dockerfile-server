@@ -1,0 +1,22 @@
+# Dockerfile to bake a python-rq worker for hwaas into a container based on
+# a minimal Alpine linux
+# RT ~ 2018/07/30
+
+FROM alpine:3.6
+LABEL maintainer "Raphael Theberge"
+
+RUN apk add --no-cache python3 python3-dev
+
+ADD src /srv/Friendly-hello-world/src
+COPY dockerconfigs/server/start.sh /
+
+RUN python3 -m venv /srv/Friendly-hello-world/_venv && \
+    . /srv/Friendly-hello-world/_venv/bin/activate && \
+    pip install -r /srv/Friendly-hello-world/src/requirements.txt
+
+# Buffering mucks up logging of stdout; otherwise we'd need a sys.stdout.flush()
+# after each print().
+ENV PYTHONUNBUFFERED=true
+
+USER nobody
+CMD /start.sh
