@@ -13,11 +13,11 @@ function help()
   # in python. For brevity i'll keep this simple.
   echo "This is a very simple script to use hwaas."
   echo "It requires having docker installed and running."
-  echo "./hwaas help -- print this help text."
-  echo "./hwaas build -- build the dokcer images."
+  echo "./hwaas help  -- print this help text."
+  echo "./hwaas build -- build the docker images."
   echo "./hwaas start -- start 1 client and 1 server."
-  echo "./hwaas X Y -- start X clients and Y servers."
-  echo "./hwaas stop -- stop hwaas."
+  echo "./hwaas X Y   -- start X clients and Y servers."
+  echo "./hwaas stop  -- stop hwaas."
 }
 
 function dev_start()
